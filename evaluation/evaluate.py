@@ -49,6 +49,7 @@ from evaluation.compare import loosely_compare_dataframes
 from framework.agent import ANSWER_SUBMITTED_PREFIX, Agent, AgentEvent, EventType, Tool
 from framework.database import execute_query
 from framework.llm import OpenRouterConfig, TokenUsage
+from tools.context_tools import CONTEXT_TOOLS
 from tools.submit_answer import SUBMIT_ANSWER
 
 # =============================================================================
@@ -144,9 +145,8 @@ def create_tools() -> dict[str, Tool]:
         A dictionary mapping tool names to Tool objects.
     """
     return {
+        **{tool.name: tool for tool in CONTEXT_TOOLS},
         SUBMIT_ANSWER.name: SUBMIT_ANSWER,
-        # Add your custom tools here:
-        # MY_TOOL.name: MY_TOOL,
     }
 
 
