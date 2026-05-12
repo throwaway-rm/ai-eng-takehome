@@ -16,7 +16,7 @@ def get_schemas(schema_names: list[str], include_row_counts: bool = False) -> st
 
 def execute_query(query: str, max_rows: int = 20) -> str:
     """Execute a SQL query preview without submitting a final answer."""
-    dataframe, error = preview_query(query, max_rows=max_rows)
+    dataframe, error, applied_max_rows = preview_query(query, max_rows=max_rows)
     if error is not None:
         return f"ERROR: {error}"
     if dataframe is None:
@@ -24,7 +24,7 @@ def execute_query(query: str, max_rows: int = 20) -> str:
 
     return (
         "OK: query executed successfully. "
-        f"Preview is limited to {max_rows} row(s); run COUNT(*) separately "
+        f"Preview is limited to {applied_max_rows} row(s); run COUNT(*) separately "
         "if you need the full row count.\n\n"
         f"{dataframe}"
     )

@@ -174,11 +174,11 @@ def build_context_catalog() -> str:
     )
 
 
-def preview_query(query: str, max_rows: int = 20) -> tuple[pl.DataFrame | None, str | None]:
+def preview_query(query: str, max_rows: int = 20) -> tuple[pl.DataFrame | None, str | None, int]:
     """Run a read-only preview of a SQL query with a row limit."""
     cleaned_query = query.strip().rstrip(";")
     if not cleaned_query:
-        return None, "Query is empty."
+        return None, "Query is empty.", max_rows
 
     max_rows = max(1, min(max_rows, 50))
     preview_sql = f"SELECT * FROM ({cleaned_query}) AS agent_query_preview LIMIT {max_rows}"
@@ -186,10 +186,10 @@ def preview_query(query: str, max_rows: int = 20) -> tuple[pl.DataFrame | None, 
     conn = duckdb.connect(str(DATABASE_PATH), read_only=True)
     try:
         result = conn.execute(preview_sql)
-        return pl.DataFrame(result.fetch_arrow_table()), None
+        return pl.DataFrame(result.fetch_arrow_table()), None, max_rows
     except duckdb.Error as e:
-        return None, f"DuckDB error: {e}"
+        return None, f"DuckDB error: {e}", max_rows
     except Exception as e:
-        return None, str(e)
+        return None, str(e), max_rows
     finally:
         conn.close()
