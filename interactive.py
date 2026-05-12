@@ -14,6 +14,7 @@ from rich.prompt import Prompt
 from framework.agent import Agent, Tool
 from framework.llm import OpenRouterConfig
 from framework.stream_printer import StreamPrinter
+from tools.context_tools import CONTEXT_TOOLS
 from tools.submit_answer import SUBMIT_ANSWER
 
 
@@ -24,8 +25,8 @@ def create_tools() -> dict[str, Tool]:
         Dictionary mapping tool names to Tool instances.
     """
     return {
+        **{tool.name: tool for tool in CONTEXT_TOOLS},
         SUBMIT_ANSWER.name: SUBMIT_ANSWER,
-        # You can add your own tools here to test!
     }
 
 
